@@ -45,16 +45,17 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
-    <key>NSAppTransportSecurity</key>
-    <dict>
-        <key>NSAllowsArbitraryLoads</key>
-        <true/>
-        <key>NSAllowsArbitraryLoadsInWebContent</key>
-        <true/>
-    </dict>
-    <key>CFBundleAllowMixedLocalizations</key>
+</dict>
+<key>NSAppTransportSecurity</key>
+<dict>
+    <key>NSAllowsArbitraryLoads</key>
     <true/>
-    <key>io.flutter.embedded_views_preview</key>
+    <key>NSAllowsArbitraryLoadsInWebContent</key>
     <true/>
 </dict>
+<key>CFBundleAllowMixedLocalizations</key>
+<true/>
+<key>io.flutter.embedded_views_preview</key>
+<true/>
+
 </plist>
