@@ -1,0 +1,103 @@
+{
+  "home": [
+    {
+      "title": "Sign in",
+      "icon": "login",
+      "url": "https://www.finasana.com/medi/login/log_mobi_signin.cfm"
+    },
+    {
+      "title": "My Account",
+      "icon": "account_circle",
+      "children": [
+        {
+          "title": "Create a Free Account",
+          "url": "https://www.finasana.com/medi/login/log_getstarted.cfm"
+        },
+        { "title": "Debug", "url": "https://www.finasana.com/medi/pnolog/debug.cfm" }
+      ]
+    },
+    {
+      "title": "About Us",
+      "icon": "info_outline",
+      "children": [
+        { "title": "Our Story", "url": "https://www.finasana.com/medi/pnolog/b_textos.cfm?func=founder" },
+        { "title": "Privacy & Usage", "url": "https://www.finasana.com/medi/pnolog/b_textos.cfm?func=privacy" },
+        { "title": "Press", "url": "https://www.finasana.com/medi/pnolog/b_textos.cfm?func=press" },
+        { "title": "Careers", "url": "https://www.finasana.com/medi/pnolog/b_textos.cfm?func=careers" },
+        { "title": "Partnerships", "url": "https://www.finasana.com/medi/pnolog/b_textos.cfm?func=partner" }
+      ]
+    },
+    {
+      "title": "Quizzes",
+      "icon": "quiz",
+      "url": "https://www.finasana.com/medi/pages/E_gridv2.cfm?catid=0&scope=Questionarios&sct=0"
+    },
+    {
+      "title": "Help",
+      "icon": "help_outline",
+      "children": [
+        {
+          "title": "Contact Us",
+          "url": "https://www.finasana.com/medi/pnolog/e_contato.cfm"
+        }
+      ]
+    },
+    {
+      "title": "Home",
+      "icon": "home",
+      "url": "https://www.finasana.com/medi/pages/indexm.cfm?pt=smartphone&lang=1"
+    }
+  ],
+  "tools": [
+    {
+      "title": "Sign out",
+      "icon": "logout",
+      "url": "https://www.finasana.com/medi/login/log_logout.cfm"
+    },
+    {
+      "title": "Manage",
+      "icon": "settings",
+      "children": [
+        { "title": "My Profile", "url": "https://www.finasana.com/medi/plog/cta_perfil_dsp.cfm" },
+        { "title": "Change Password", "url": "https://www.finasana.com/medi/plog/cta_perfil_senha.cfm" },
+        { "title": "Debug", "url": "https://www.finasana.com/medi/pnolog/debug.cfm" }
+      ]
+    },
+    {
+      "title": "About Us",
+      "icon": "info_outline",
+      "children": [
+        { "title": "Our Story", "url": "https://www.finasana.com/medi/pnolog/b_textos.cfm?func=founder" },
+        { "title": "Privacy & Usage", "url": "https://www.finasana.com/medi/pnolog/b_textos.cfm?func=privacy" },
+        { "title": "Press", "url": "https://www.finasana.com/medi/pnolog/b_textos.cfm?func=press" },
+        { "title": "Careers", "url": "https://www.finasana.com/medi/pnolog/b_textos.cfm?func=careers" },
+        { "title": "Partnerships", "url": "https://www.finasana.com/medi/pnolog/b_textos.cfm?func=partner" }
+      ]
+    },
+    {
+      "title": "My Webinars",
+      "icon": "video_library",
+      "url": "https://www.finasana.com/medi/plog/CTA_perfil_compras_webinar.cfm"
+    },
+    {
+      "title": "My Purchases",
+      "icon": "shopping_cart",
+      "url": "https://www.finasana.com/medi/plog/CTA_perfil_compras.cfm"
+    },
+    {
+      "title": "My Courses",
+      "icon": "school",
+      "url": "https://www.finasana.com/medi/plog/CTA_perfil_compras_courses.cfm"
+    },
+    {
+      "title": "Contact us",
+      "icon": "mail_outline",
+      "url": "https://www.finasana.com/medi/pnolog/e_contato.cfm"
+    },
+    {
+      "title": "Home",
+      "icon": "home",
+      "url": "https://www.finasana.com/medi/pages/indexm.cfm?pt=smartphone&lang=1"
+    }
+  ]
+}
