@@ -54,7 +54,5 @@
   <key>NSPhotoLibraryUsageDescription</key>
   <string>Photo access is required for uploading and media previews.</string>
 
-
-
 </dict>
 </plist>
