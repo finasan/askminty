@@ -46,14 +46,7 @@ class _WebViewContainerState extends State<WebViewContainer> {
       body: SafeArea(
         child: InAppWebView(
           initialUrlRequest: URLRequest(
-            url: WebUri("https://example.com"), // ✅ Safe test URL
-          ),
-          iosOptions: IOSInAppWebViewOptions(
-            allowsInlineMediaPlayback: true,
-            allowsAirPlayForMediaPlayback: true,
-            allowsBackForwardNavigationGestures: true,
-            isFraudulentWebsiteWarningEnabled: true,
-            ignoresViewportScaleLimits: true,
+            url: WebUri("https://example.com"), // ✅ Use this to isolate iOS crash cause
           ),
           onWebViewCreated: (controller) {
             webViewController = controller;
