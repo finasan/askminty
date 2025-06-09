@@ -31,6 +31,7 @@
   <array>
     <string>UIInterfaceOrientationPortrait</string>
     <string>UIInterfaceOrientationLandscapeLeft</string>
+    <string>UIInterfaceOrientationPortraitUpsideDown</string>
     <string>UIInterfaceOrientationLandscapeRight</string>
   </array>
   <key>io.flutter.embedded_views_preview</key>
