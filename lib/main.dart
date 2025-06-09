@@ -12,16 +12,18 @@ void main() {
     }
     runApp(const MyApp());
   }, (error, stackTrace) {
-    debugPrint("Unhandled error: $error");
+    debugPrint("🔥 TOP LEVEL CRASH: $error");
+    debugPrint("📌 STACK TRACE:\n$stackTrace");
   });
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Finasana App',
+      title: 'WebView Test',
       debugShowCheckedModeBanner: false,
       home: const WebViewContainer(),
     );
@@ -30,6 +32,7 @@ class MyApp extends StatelessWidget {
 
 class WebViewContainer extends StatefulWidget {
   const WebViewContainer({super.key});
+
   @override
   State<WebViewContainer> createState() => _WebViewContainerState();
 }
@@ -43,12 +46,23 @@ class _WebViewContainerState extends State<WebViewContainer> {
       body: SafeArea(
         child: InAppWebView(
           initialUrlRequest: URLRequest(
-            url: WebUri("https://www.finasana.com"),
+            url: WebUri("https://example.com"), // ✅ Safe test URL
+          ),
+          iosOptions: IOSInAppWebViewOptions(
+            allowsInlineMediaPlayback: true,
+            allowsAirPlayForMediaPlayback: true,
+            allowsBackForwardNavigationGestures: true,
+            isFraudulentWebsiteWarningEnabled: true,
+            ignoresViewportScaleLimits: true,
           ),
           onWebViewCreated: (controller) {
             webViewController = controller;
           },
+          onLoadStop: (controller, url) {
+            debugPrint("✅ Loaded URL: $url");
+          },
           onLoadError: (controller, url, code, message) {
+            debugPrint("❌ Load Error: $message ($code)");
             controller.loadData(
               data: "<html><body><h2>Failed to load page.</h2><p>$message</p></body></html>",
               baseUrl: WebUri("about:blank"),
@@ -57,6 +71,7 @@ class _WebViewContainerState extends State<WebViewContainer> {
             );
           },
           onLoadHttpError: (controller, url, statusCode, description) {
+            debugPrint("❌ HTTP Error $statusCode: $description");
             controller.loadData(
               data: "<html><body><h2>HTTP Error $statusCode</h2><p>$description</p></body></html>",
               baseUrl: WebUri("about:blank"),
