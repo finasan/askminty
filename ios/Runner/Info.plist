@@ -53,5 +53,11 @@
   <string>Microphone access is required for video/audio features.</string>
   <key>NSPhotoLibraryUsageDescription</key>
   <string>Photo access is required for uploading and media previews.</string>
+  <key>NSAppTransportSecurity</key>
+  <dict>
+    <key>NSAllowsArbitraryLoads</key>
+    <true/>
+  </dict>
+
 </dict>
 </plist>
