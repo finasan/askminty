@@ -112,6 +112,7 @@ class AppMenuData {
     }
 
     String? jsonString;
+    bool externalLoadSuccessful = false;
 
     try {
       // Attempt to load from external URL first
@@ -119,18 +120,29 @@ class AppMenuData {
       final response = await http.get(Uri.parse(_externalMenuUrl));
 
       if (response.statusCode == 200) {
-        jsonString = response.body;
-        debugPrint("AppMenuData: Successfully loaded JSON from external URL. Length: ${jsonString.length}");
+        // --- NEW: Try to parse JSON here. If it fails, treat as an unsuccessful external load ---
+        try {
+          // Attempt to decode the response body to ensure it's valid JSON
+          jsonDecode(response.body); // Just try decoding, don't store yet
+          jsonString = response.body; // If decode succeeds, then assign
+          externalLoadSuccessful = true;
+          debugPrint("AppMenuData: Successfully loaded and preliminarily validated JSON from external URL. Length: ${jsonString.length}");
+        } on FormatException catch (e) {
+          debugPrint("AppMenuData: External URL returned non-JSON content (Status: ${response.statusCode}). JSON parsing failed: $e. Falling back to assets.");
+          externalLoadSuccessful = false; // Explicitly set to false due to bad JSON
+        }
       } else {
         debugPrint(
             "AppMenuData: Failed to load from external URL (Status: ${response.statusCode}). Falling back to assets.");
+        externalLoadSuccessful = false;
       }
     } catch (e) {
       debugPrint("AppMenuData: Error fetching from external URL: $e. Falling back to assets.");
+      externalLoadSuccessful = false;
     }
 
-    // If external load failed or was not attempted, load from assets
-    if (jsonString == null || jsonString.isEmpty) {
+    // If external load failed or was not attempted (or returned bad JSON), load from assets
+    if (!externalLoadSuccessful || jsonString == null || jsonString.isEmpty) {
       try {
         debugPrint("AppMenuData: Loading menu data from assets: $_fallbackAssetPath");
         jsonString = await rootBundle.loadString(_fallbackAssetPath);
@@ -141,7 +153,7 @@ class AppMenuData {
       }
     }
 
-    // Parse the loaded JSON string
+    // Parse the loaded JSON string (either from external or fallback)
     try {
       final Map<String, dynamic> jsonMap = jsonDecode(jsonString!);
       _menuDataCache = {};
@@ -153,7 +165,7 @@ class AppMenuData {
       debugPrint("AppMenuData: Successfully parsed menu data. Keys: ${_menuDataCache?.keys}");
       return _menuDataCache!;
     } catch (e) {
-      debugPrint("AppMenuData: ERROR parsing JSON data: $e");
+      debugPrint("AppMenuData: ERROR parsing JSON data: $e"); // This would catch errors from asset JSON too
       return {}; // Return empty map on parsing error
     }
   }
