@@ -39,5 +39,6 @@ flutter:
   assets:
     - assets/FinaAndroid.png
     - assets/menu_data.json
+    - assets/bottom_nav_data.json
 
 

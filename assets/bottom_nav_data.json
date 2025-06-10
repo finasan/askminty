@@ -1,0 +1,66 @@
+{
+  "home": [
+    {
+      "title": "Sign In",
+      "icon": "login",
+      "url": "https://www.finasana.com/medi/login/log_mobi_signin.cfm"
+    },
+    {
+      "title": "Paths",
+      "icon": "alt_route",
+      "url": "https://www.finasana.com/medi/pages/e_gridv2.cfm?scope=Trilhas&sct=0&catid=0"
+    },
+    {
+      "title": "Articles",
+      "icon": "article",
+      "url": "https://www.finasana.com/medi/pages/e_gridv2.cfm?scope=Blog&sct=0&catid=0"
+    },
+    {
+      "title": "Trivia",
+      "icon": "question_mark",
+      "url": "https://www.finasana.com/medi/pages/e_gridv2.cfm?scope=Questionarios&sct=0&catid=0"
+    },
+    {
+      "title": "Podcast",
+      "icon": "podcasts",
+      "url": "https://www.finasana.com/medi/pages/e_podcast.cfm"
+    },
+    {
+      "title": "Tools",
+      "icon": "build",
+      "url": "https://www.finasana.com/medi/pages/E_loja.cfm?tools"
+    }
+  ],
+  "tools": [
+    {
+      "title": "Sign Out",
+      "icon": "logout",
+      "url": "https://www.finasana.com/medi/login/log_logout.cfm"
+    },
+    {
+      "title": "Paths",
+      "icon": "alt_route",
+      "url": "https://www.finasana.com/medi/pages/e_gridv2.cfm?scope=Trilhas&sct=0&catid=0"
+    },
+    {
+      "title": "Articles",
+      "icon": "article",
+      "url": "https://www.finasana.com/medi/pages/e_gridv2.cfm?scope=Blog&sct=0&catid=0"
+    },
+    {
+      "title": "Trivia",
+      "icon": "question_mark",
+      "url": "https://www.finasana.com/medi/pages/E_gridv2.cfm?catid=0&scope=Questionarios&sct=0"
+    },
+    {
+      "title": "Podcast",
+      "icon": "podcasts",
+      "url": "https://www.finasana.com/medi/pages/e_podcast.cfm"
+    },
+    {
+      "title": "Tools",
+      "icon": "build",
+      "url": "https://www.finasana.com/medi/pages/E_loja.cfm?tools"
+    }
+  ]
+}
