@@ -6,7 +6,7 @@
 
 
     <application
-        android:label="Finasana Y Finay 4"
+        android:label="Finasana 12"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:usesCleartextTraffic="true">

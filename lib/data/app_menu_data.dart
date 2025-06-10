@@ -3,6 +3,7 @@ import 'dart:convert'; // For jsonDecode
 import 'package:flutter/services.dart' show rootBundle; // For loading assets
 import 'package:flutter/material.dart'; // For IconData
 import 'package:flutter/foundation.dart'; // For debugPrint
+import 'package:http/http.dart' as http; // For making HTTP requests
 
 /// A data model for a single menu item.
 /// Can be a top-level item or a child of another item.
@@ -34,23 +35,56 @@ class AppMenuItem {
     IconData? iconData;
     if (json['icon'] != null) {
       switch (json['icon']) {
-        case 'login': iconData = Icons.login; break;
-        case 'account_circle': iconData = Icons.account_circle; break;
-        case 'info_outline': iconData = Icons.info_outline; break;
-        case 'quiz': iconData = Icons.quiz; break;
-        case 'help_outline': iconData = Icons.help_outline; break;
-        case 'home': iconData = Icons.home; break;
-        case 'settings': iconData = Icons.settings; break;
-        case 'video_library': iconData = Icons.video_library; break;
-        case 'shopping_cart': iconData = Icons.shopping_cart; break;
-        case 'school': iconData = Icons.school; break;
-        case 'mail_outline': iconData = Icons.mail_outline; break;
-        case 'alt_route': iconData = Icons.alt_route; break; // For Paths icon
-        case 'article': iconData = Icons.article; break; // For Articles icon
-        case 'build': iconData = Icons.build; break; // For Tools icon
-        case 'logout': iconData = Icons.logout; break; // For Sign Out icon
-        case 'dashboard': iconData = Icons.dashboard; break; // For Main Options icon
-        default: iconData = null; // No icon if not mapped
+        case 'login':
+          iconData = Icons.login;
+          break;
+        case 'account_circle':
+          iconData = Icons.account_circle;
+          break;
+        case 'info_outline':
+          iconData = Icons.info_outline;
+          break;
+        case 'quiz':
+          iconData = Icons.quiz;
+          break;
+        case 'help_outline':
+          iconData = Icons.help_outline;
+          break;
+        case 'home':
+          iconData = Icons.home;
+          break;
+        case 'settings':
+          iconData = Icons.settings;
+          break;
+        case 'video_library':
+          iconData = Icons.video_library;
+          break;
+        case 'shopping_cart':
+          iconData = Icons.shopping_cart;
+          break;
+        case 'school':
+          iconData = Icons.school;
+          break;
+        case 'mail_outline':
+          iconData = Icons.mail_outline;
+          break;
+        case 'alt_route':
+          iconData = Icons.alt_route;
+          break; // For Paths icon
+        case 'article':
+          iconData = Icons.article;
+          break; // For Articles icon
+        case 'build':
+          iconData = Icons.build;
+          break; // For Tools icon
+        case 'logout':
+          iconData = Icons.logout;
+          break; // For Sign Out icon
+        case 'dashboard':
+          iconData = Icons.dashboard;
+          break; // For Main Options icon
+        default:
+          iconData = null; // No icon if not mapped
       }
     }
 
@@ -66,8 +100,10 @@ class AppMenuItem {
 /// A class to load and provide menu data from assets.
 class AppMenuData {
   static Map<String, List<AppMenuItem>>? _menuDataCache;
+  static const String _externalMenuUrl = 'https://www.finasana.com/jsonmenu.cfm';
+  static const String _fallbackAssetPath = 'assets/menu_data.json';
 
-  /// Loads menu data from the assets/menu_data.json file.
+  /// Loads menu data from the external source or falls back to assets.
   /// Caches the data to avoid reloading on subsequent calls.
   static Future<Map<String, List<AppMenuItem>>> loadMenuData() async {
     if (_menuDataCache != null) {
@@ -75,22 +111,50 @@ class AppMenuData {
       return _menuDataCache!;
     }
 
-    try {
-      final String jsonString = await rootBundle.loadString('assets/menu_data.json');
-      debugPrint("AppMenuData: Loaded JSON string length: ${jsonString.length}");
-      final Map<String, dynamic> jsonMap = jsonDecode(jsonString);
+    String? jsonString;
 
+    try {
+      // Attempt to load from external URL first
+      debugPrint("AppMenuData: Attempting to load menu data from external URL: $_externalMenuUrl");
+      final response = await http.get(Uri.parse(_externalMenuUrl));
+
+      if (response.statusCode == 200) {
+        jsonString = response.body;
+        debugPrint("AppMenuData: Successfully loaded JSON from external URL. Length: ${jsonString.length}");
+      } else {
+        debugPrint(
+            "AppMenuData: Failed to load from external URL (Status: ${response.statusCode}). Falling back to assets.");
+      }
+    } catch (e) {
+      debugPrint("AppMenuData: Error fetching from external URL: $e. Falling back to assets.");
+    }
+
+    // If external load failed or was not attempted, load from assets
+    if (jsonString == null || jsonString.isEmpty) {
+      try {
+        debugPrint("AppMenuData: Loading menu data from assets: $_fallbackAssetPath");
+        jsonString = await rootBundle.loadString(_fallbackAssetPath);
+        debugPrint("AppMenuData: Successfully loaded JSON from assets. Length: ${jsonString.length}");
+      } catch (e) {
+        debugPrint("AppMenuData: ERROR loading from fallback asset $_fallbackAssetPath: $e");
+        return {}; // Return empty map if fallback also fails
+      }
+    }
+
+    // Parse the loaded JSON string
+    try {
+      final Map<String, dynamic> jsonMap = jsonDecode(jsonString!);
       _menuDataCache = {};
       jsonMap.forEach((key, value) {
         _menuDataCache![key] = (value as List)
             .map((itemJson) => AppMenuItem.fromJson(itemJson))
             .toList();
       });
-      debugPrint("AppMenuData: Successfully loaded and parsed menu_data.json. Keys: ${_menuDataCache?.keys}");
+      debugPrint("AppMenuData: Successfully parsed menu data. Keys: ${_menuDataCache?.keys}");
       return _menuDataCache!;
     } catch (e) {
-      debugPrint("AppMenuData: ERROR loading or parsing menu_data.json: $e");
-      return {}; // Return empty map on error
+      debugPrint("AppMenuData: ERROR parsing JSON data: $e");
+      return {}; // Return empty map on parsing error
     }
   }
 
