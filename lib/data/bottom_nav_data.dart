@@ -27,65 +27,52 @@ class BottomNavItem {
       case 'alt_route': iconData = Icons.alt_route; break; // For Paths icon
       case 'article': iconData = Icons.article; break; // For Articles icon
       case 'question_mark': iconData = Icons.question_mark; break; // For Trivia icon
-      case 'podcasts': iconData = Icons.podcasts; break; // For Podcast icon
+      case 'podcasts': iconData = Icons.podcasts; break; // For Podcasts icon
+      case 'search': iconData = Icons.search; break; // For Search icon
+      case 'shopping_cart_outlined': iconData = Icons.shopping_cart_outlined; break; // For Loja icon
       case 'build': iconData = Icons.build; break; // For Tools icon
-    // Add more cases here if you have other icons in your JSON
-      default: iconData = Icons.error; // Default to an error icon if not found
+      case 'home_outlined': iconData = Icons.home_outlined; break;
+      case 'insert_chart_outlined': iconData = Icons.insert_chart_outlined; break;
+      case 'person_outline': iconData = Icons.person_outline; break;
+      default: iconData = Icons.help_outline; // Default icon if not found
     }
 
     return BottomNavItem(
-      title: json['title'] as String,
+      title: json['title'],
       icon: iconData,
-      url: json['url'] as String,
+      url: json['url'],
     );
   }
 }
 
-/// A class to load and provide bottom navigation bar data.
+/// A static class to load and manage bottom navigation data.
 class BottomNavDataLoader {
-  static Map<String, List<BottomNavItem>>? _bottomNavDataCache;
-  static const String _externalBottomNavUrl = 'https://www.finasana.com/jsonbottom.cfm';
+  static const String _remoteUrl = 'https://www.finasana.com/medi/conf/bottom_nav_data.json';
   static const String _fallbackAssetPath = 'assets/bottom_nav_data.json';
+  static Map<String, List<BottomNavItem>>? _bottomNavDataCache;
 
-  /// Loads bottom navigation data from the external source or falls back to assets.
-  /// Caches the data to avoid reloading on subsequent calls.
+  /// Loads bottom navigation data from a remote URL or a local asset.
   static Future<Map<String, List<BottomNavItem>>> loadBottomNavData() async {
     if (_bottomNavDataCache != null) {
-      debugPrint("BottomNavDataLoader: Returning bottom nav data from cache.");
       return _bottomNavDataCache!;
     }
 
     String? jsonString;
-    bool externalLoadSuccessful = false;
-
     try {
-      debugPrint("BottomNavDataLoader: Attempting to load bottom nav data from external URL: $_externalBottomNavUrl");
-      final response = await http.get(Uri.parse(_externalBottomNavUrl));
-
+      final response = await http.get(Uri.parse(_remoteUrl));
       if (response.statusCode == 200) {
-        try {
-          // Attempt to decode the response body to ensure it's valid JSON
-          jsonDecode(response.body); // Just try decoding, don't store yet
-          jsonString = response.body; // If decode succeeds, then assign
-          externalLoadSuccessful = true;
-          debugPrint("BottomNavDataLoader: Successfully loaded and preliminarily validated JSON from external URL. Length: ${jsonString.length}");
-        } on FormatException catch (e) {
-          debugPrint("BottomNavDataLoader: External URL returned non-JSON content (Status: ${response.statusCode}). JSON parsing failed: $e. Falling back to assets.");
-          externalLoadSuccessful = false; // Explicitly set to false due to bad JSON
-        }
+        jsonString = response.body;
+        debugPrint("BottomNavDataLoader: Successfully loaded JSON from remote URL. Length: ${jsonString.length}");
       } else {
-        debugPrint("BottomNavDataLoader: Failed to load from external URL (Status: ${response.statusCode}). Falling back to assets.");
-        externalLoadSuccessful = false;
+        debugPrint("BottomNavDataLoader: Failed to load JSON from remote URL (Status: ${response.statusCode}). Falling back to assets.");
       }
     } catch (e) {
-      debugPrint("BottomNavDataLoader: Error fetching from external URL: $e. Falling back to assets.");
-      externalLoadSuccessful = false;
+      debugPrint("BottomNavDataLoader: ERROR loading from remote URL: $e. Falling back to assets.");
     }
 
-    // If external load failed or was not attempted (or returned bad JSON), load from assets
-    if (!externalLoadSuccessful || jsonString == null || jsonString.isEmpty) {
+    // If remote loading fails or is empty, try loading from local assets
+    if (jsonString == null || jsonString.isEmpty) {
       try {
-        debugPrint("BottomNavDataLoader: Loading bottom nav data from assets: $_fallbackAssetPath");
         jsonString = await rootBundle.loadString(_fallbackAssetPath);
         debugPrint("BottomNavDataLoader: Successfully loaded JSON from assets. Length: ${jsonString.length}");
       } catch (e) {
@@ -106,7 +93,7 @@ class BottomNavDataLoader {
       debugPrint("BottomNavDataLoader: Successfully parsed bottom nav data. Keys: ${_bottomNavDataCache?.keys}");
       return _bottomNavDataCache!;
     } catch (e) {
-      debugPrint("BottomNavDataLoader: ERROR parsing JSON data: $e");
+      debugPrint("BottomNavDataLoader: ERROR parsing JSON data: $e"); // This would catch errors from asset JSON too
       return {}; // Return empty map on parsing error
     }
   }
@@ -115,7 +102,7 @@ class BottomNavDataLoader {
   static Future<List<BottomNavItem>> getBottomNavItemsForContext(String context) async {
     final allBottomNavData = await loadBottomNavData();
     final List<BottomNavItem> items = allBottomNavData[context] ?? [];
-    debugPrint("BottomNavDataLoader: Retrieving bottom nav items for context '$context'. Found ${items.length} items.");
+    debugPrint("BottomNavDataLoader: Retrieving bottom nav items for context '$context': ${items.length} items found.");
     return items;
   }
 }

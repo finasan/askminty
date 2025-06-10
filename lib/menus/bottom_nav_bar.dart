@@ -103,9 +103,9 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
         }
       },
       items: displayItems, // Use the 'displayItems' list which handles placeholders
-      selectedItemColor: Theme.of(context).colorScheme.primary,
-      unselectedItemColor: Theme.of(context).colorScheme.onSurface,
-      backgroundColor: Theme.of(context).colorScheme.surface,
+      selectedItemColor: Color(0xFF21C87A),
+      unselectedItemColor: Colors.white,
+      backgroundColor: Colors.black,
       // You can add more styling here if needed
     );
   }
