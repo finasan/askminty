@@ -234,6 +234,17 @@ class _SplashScreenState extends State<SplashScreen> {
                           ),
                         ),
                       ),
+                    // >>> MODIFICATION STARTS HERE <<<
+                    if (_isDrawerOpen) // Only show the GestureDetector when the drawer is open
+                      Positioned.fill(
+                        child: GestureDetector(
+                          onTap: _toggleDrawer, // Call _toggleDrawer to close the drawer
+                          child: Container(
+                            color: Colors.black.withOpacity(0.3), // Semi-transparent overlay
+                          ),
+                        ),
+                      ),
+                    // >>> MODIFICATION ENDS HERE <<<
                     AnimatedPositioned(
                       duration: const Duration(milliseconds: 300),
                       curve: Curves.easeInOut,

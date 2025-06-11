@@ -31,48 +31,49 @@ class _CustomDrawerPanelState extends State<CustomDrawerPanel> {
   @override
   void initState() {
     super.initState();
-    _loadMenuItems();
+    // Load menu items initially without forcing a refresh.
+    // They will come from cache or a fresh network fetch if cache is empty.
+    _loadMenuItems(forceRefresh: false);
   }
 
   @override
   void didUpdateWidget(covariant CustomDrawerPanel oldWidget) {
     super.didUpdateWidget(oldWidget);
-    // Reload menu items if the coldFusionMenuState changes
+    // Reload items if the coldFusionMenuState changes, but do NOT force a refresh here.
+    // The force refresh will now be handled only when the specific 'home' menu item is tapped.
     if (widget.coldFusionMenuState != oldWidget.coldFusionMenuState) {
-      debugPrint("CustomDrawerPanel: coldFusionMenuState changed from ${oldWidget.coldFusionMenuState} to ${widget.coldFusionMenuState}. Reloading menu.");
-      _loadMenuItems();
+      _loadMenuItems(forceRefresh: false);
     }
   }
 
-  /// Loads menu items based on the current coldFusionMenuState.
-  Future<void> _loadMenuItems() async {
-    debugPrint("CustomDrawerPanel: Attempting to load menu items for state: ${widget.coldFusionMenuState}");
-    final List<AppMenuItem> items = await AppMenuData.getMenuItemsForContext(widget.coldFusionMenuState);
+  /// Loads menu items for the current coldFusionMenuState.
+  /// `forceRefresh` bypasses the cache in AppMenuData.
+  Future<void> _loadMenuItems({bool forceRefresh = false}) async {
+    final items = await AppMenuData.getMenuItemsForContext(
+      widget.coldFusionMenuState,
+      forceRefresh: forceRefresh, // Pass the forceRefresh parameter to the data loader
+    );
     if (mounted) {
       setState(() {
         _currentMenuItems = items;
-        debugPrint("CustomDrawerPanel: Loaded ${items.length} items for state: ${widget.coldFusionMenuState}");
       });
+      debugPrint("CustomDrawerPanel: Loaded menu items for state '${widget.coldFusionMenuState}'. Count: ${items.length}");
     }
   }
 
-  /// Recursively builds menu tiles, handling nested children.
-  List<Widget> _buildMenuItemTiles(List<AppMenuItem> items, {double currentIndent = 0}) {
-    // This value is the standard horizontal offset for a ListTile's title
-    // when a leading icon is present (default contentPadding + leading icon area).
-    // This should align the children's text with the parent's text.
-    const double textAlignmentOffset = 38.0;
+  // Helper to build recursive menu tiles with indentation
+  List<Widget> _buildMenuItemTiles(List<AppMenuItem> menuItems, {double currentIndent = 0.0}) {
+    final double textAlignmentOffset = 56.0; // Standard offset to align text with ListTiles that have a leading icon
 
-    return items.map((item) {
+    return menuItems.map((item) {
       if (item.children != null && item.children!.isNotEmpty) {
-        // If the item has children, create an ExpansionTile
+        // If it has children, create an ExpansionTile
         return Padding(
-          padding: EdgeInsets.only(left: currentIndent), // Apply current indentation for this level
+          padding: EdgeInsets.only(left: currentIndent), // Apply current indentation
           child: ExpansionTile(
             leading: item.icon != null ? Icon(item.icon) : null,
             title: Text(item.title),
-            // For children, increase the indent by `textAlignmentOffset`
-            // to align their content with the parent's title text.
+            // Indent children by adding to the currentIndent and then adjusting for text alignment
             children: _buildMenuItemTiles(item.children!, currentIndent: currentIndent + textAlignmentOffset),
           ),
         );
@@ -86,7 +87,21 @@ class _CustomDrawerPanelState extends State<CustomDrawerPanel> {
             onTap: () {
               widget.onClose(); // Close the panel before performing the action
               if (item.url != null) {
-                widget.onUrlSelected(item.url!); // Use the callback to load URL in parent's webview
+                // Load URL in parent's webview
+                widget.onUrlSelected(item.url!);
+
+                // --- MODIFIED LOGIC: Force refresh ONLY if this is the 'home' menu item with specific URL ---
+                // Using a more specific contains check based on the exact URL provided by the user.
+                final bool isHomeMenuItem = item.url!.toLowerCase().contains('indexm.cfm?pt=smartphone&lang=1');
+
+                if (isHomeMenuItem) {
+                  debugPrint("CustomDrawerPanel: 'Home' menu item (indexm.cfm?pt=smartphone&lang=1) tapped. Forcing menu data refresh.");
+                  // Trigger a force refresh of the menu items for the *current* coldFusionMenuState.
+                  // This reloads the menu itself after navigating home.
+                  _loadMenuItems(forceRefresh: true);
+                }
+                // --- END MODIFIED LOGIC ---
+
               } else {
                 debugPrint('${item.title} clicked (no action/URL defined)');
               }
@@ -105,6 +120,7 @@ class _CustomDrawerPanelState extends State<CustomDrawerPanel> {
       child: ListView(
         padding: EdgeInsets.zero, // Remove default ListView padding
         children: <Widget>[
+          // --- DrawerHeader was REMOVED to restore original look and feel ---
           ..._buildMenuItemTiles(_currentMenuItems), // Build menu tiles starting with no indent
         ],
       ),

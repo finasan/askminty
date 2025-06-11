@@ -47,7 +47,7 @@ class BottomNavItem {
 
 /// A static class to load and manage bottom navigation data.
 class BottomNavDataLoader {
-  static const String _remoteUrl = 'https://www.finasana.com/medi/conf/bottom_nav_data.json';
+  static const String _remoteUrl = 'https://www.finasana.com/jsonbottom.cfm';
   static const String _fallbackAssetPath = 'assets/bottom_nav_data.json';
   static Map<String, List<BottomNavItem>>? _bottomNavDataCache;
 

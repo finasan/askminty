@@ -105,8 +105,9 @@ class AppMenuData {
 
   /// Loads menu data from the external source or falls back to assets.
   /// Caches the data to avoid reloading on subsequent calls.
-  static Future<Map<String, List<AppMenuItem>>> loadMenuData() async {
-    if (_menuDataCache != null) {
+  /// Set `forceRefresh` to true to bypass the cache and fetch new data.
+  static Future<Map<String, List<AppMenuItem>>> loadMenuData({bool forceRefresh = false}) async {
+    if (_menuDataCache != null && !forceRefresh) {
       debugPrint("AppMenuData: Returning menu data from cache.");
       return _menuDataCache!;
     }
@@ -120,7 +121,6 @@ class AppMenuData {
       final response = await http.get(Uri.parse(_externalMenuUrl));
 
       if (response.statusCode == 200) {
-        // --- NEW: Try to parse JSON here. If it fails, treat as an unsuccessful external load ---
         try {
           // Attempt to decode the response body to ensure it's valid JSON
           jsonDecode(response.body); // Just try decoding, don't store yet
@@ -156,7 +156,7 @@ class AppMenuData {
     // Parse the loaded JSON string (either from external or fallback)
     try {
       final Map<String, dynamic> jsonMap = jsonDecode(jsonString!);
-      _menuDataCache = {};
+      _menuDataCache = {}; // Clear cache before populating with new data
       jsonMap.forEach((key, value) {
         _menuDataCache![key] = (value as List)
             .map((itemJson) => AppMenuItem.fromJson(itemJson))
@@ -171,8 +171,9 @@ class AppMenuData {
   }
 
   /// Retrieves menu items for a specific context (e.g., 'home' or 'tools').
-  static Future<List<AppMenuItem>> getMenuItemsForContext(String context) async {
-    final allMenuData = await loadMenuData();
+  /// Set `forceRefresh` to true to bypass the cache and fetch new data for this request.
+  static Future<List<AppMenuItem>> getMenuItemsForContext(String context, {bool forceRefresh = false}) async {
+    final allMenuData = await loadMenuData(forceRefresh: forceRefresh);
     // === IMPORTANT FIX: Use the context directly as the key ===
     final List<AppMenuItem> items = allMenuData[context] ?? [];
     debugPrint("AppMenuData: Retrieving menu items for context '$context'. Found ${items.length} items.");

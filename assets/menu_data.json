@@ -1,7 +1,7 @@
 {
   "home": [
     {
-      "title": "Sign in",
+      "title": "Sign in Fallback",
       "icon": "login",
       "url": "https://www.finasana.com/medi/login/log_mobi_signin.cfm"
     },
