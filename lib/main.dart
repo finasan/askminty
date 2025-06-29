@@ -40,12 +40,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  // These are commented out as they were causing issues without full implementation
-  // and seem to be part of an incomplete feature based on the original problem.
-  // If you intend to use audio recording, you'll need to fully implement
-  // the FlutterSound package.
-  // final FlutterSoundRecorder _recorder = FlutterSoundRecorder();
-  // String? _filePath;
   // bool _isRecording = false;
 
   @override
@@ -103,6 +97,9 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  final FlutterSoundRecorder _recorder = FlutterSoundRecorder();
+  String? _filePath;
+
   bool _hasLoadError = false;
 
   InAppWebViewController? webViewController;
@@ -147,6 +144,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     _initializeWebView();
+    _initRecorder();
     super.initState();
     _loadInitialBottomNavItems(); // Load bottom nav items based on initial state
   }
@@ -414,5 +412,34 @@ class _SplashScreenState extends State<SplashScreen> {
         ),
       ),
     );
+  }
+
+
+  Future<void> _initRecorder() async {
+    final status = await Permission.microphone.request();
+    if (status.isGranted) {
+      final dir = await getTemporaryDirectory();
+      _filePath = '\${dir.path}/voice.aac';
+      await _recorder.openRecorder();
+    } else {
+      print("Microphone permission not granted");
+    }
+  }
+
+  Future<void> startNativeRecording() async {
+    try {
+      await _recorder.startRecorder(toFile: _filePath!);
+    } catch (e) {
+      print("Erro ao iniciar gravação: \$e");
+    }
+  }
+
+  Future<void> stopNativeRecording() async {
+    try {
+      await _recorder.stopRecorder();
+      print("Gravação salva em: \$_filePath");
+    } catch (e) {
+      print("Erro ao parar gravação: \$e");
+    }
   }
 }
