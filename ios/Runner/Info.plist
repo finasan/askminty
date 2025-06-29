@@ -45,7 +45,16 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
-	<key>NSMicrophoneUsageDescription</key>
-    <string>This app needs access to your microphone to record your voice for transcription.</string>
+    <key>NSMicrophoneUsageDescription</key>
+        <string>We need access to your microphone for audio input.</string>
+    <key>io.flutter.embedded_views_preview</key>
+      <true/>
+        <key>NSAppTransportSecurity</key>
+        <dict>
+          <key>NSAllowsArbitraryLoads</key>
+          <true/>
+        </dict>
+        <key>NSCameraUsageDescription</key>
+        <string>This app needs camera access for media recording.</string>
 </dict>
 </plist>

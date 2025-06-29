@@ -56,8 +56,6 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  bool _hasLoadError = false;
-
   InAppWebViewController? webViewController;
   double progress = 0;
   String _currentUrl = 'https://www.finasana.com'; // Initial URL
@@ -71,38 +69,7 @@ class _SplashScreenState extends State<SplashScreen> {
   List<BottomNavItem> _bottomNavItems = []; // To store dynamically loaded bottom nav items
 
   @override
-
-  bool _isWebViewReady = false;
-
-  Future<void> _initializeWebView() async {
-    try {
-      final result = await InternetAddress.lookup('www.finasana.com');
-      if (result.isNotEmpty && result.first.rawAddress.isNotEmpty) {
-        setState(() {
-          _isWebViewReady = true;
-        });
-        return;
-      }
-    } catch (_) {}
-
-    // Retry once after short delay
-    await Future.delayed(Duration(seconds: 2));
-    try {
-      final result = await InternetAddress.lookup('www.finasana.com');
-      if (result.isNotEmpty && result.first.rawAddress.isNotEmpty) {
-        setState(() {
-          _isWebViewReady = true;
-        });
-      }
-    } catch (e) {
-      print("DNS resolution failed again: \$e");
-    }
-  }
-
-
-  @override
   void initState() {
-    _initializeWebView();
     super.initState();
     _loadInitialBottomNavItems(); // Load bottom nav items based on initial state
   }
@@ -211,12 +178,6 @@ class _SplashScreenState extends State<SplashScreen> {
                   children: [
                     InAppWebView(
                       initialUrlRequest: URLRequest(url: WebUri(_currentUrl)),
-                      androidOnPermissionRequest: (controller, origin, resources) async {
-                        return PermissionRequestResponse(
-                          resources: resources,
-                          action: PermissionRequestResponseAction.GRANT,
-                        );
-                      },
                       initialOptions: getWebViewOptions(),
                       onWebViewCreated: (controller) {
                         webViewController = controller;
