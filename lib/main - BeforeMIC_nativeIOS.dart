@@ -1,4 +1,3 @@
-import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:finay/menus/custom_app_bar.dart';
@@ -212,6 +211,10 @@ class _SplashScreenState extends State<SplashScreen> {
                   children: [
                     InAppWebView(
                       initialUrlRequest: URLRequest(url: WebUri(_currentUrl)),
+                      initialSettings: InAppWebViewSettings(
+                        mediaPlaybackRequiresUserGesture: false, // 👈 this is the key setting for mic/camera
+                        allowsInlineMediaPlayback: true,         // iOS video/audio autoplay
+                      ),
                       androidOnPermissionRequest: (controller, origin, resources) async {
                         return PermissionRequestResponse(
                           resources: resources,
