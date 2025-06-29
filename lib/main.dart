@@ -211,6 +211,10 @@ class _SplashScreenState extends State<SplashScreen> {
                   children: [
                     InAppWebView(
                       initialUrlRequest: URLRequest(url: WebUri(_currentUrl)),
+                      initialSettings: InAppWebViewSettings(
+                        mediaPlaybackRequiresUserGesture: false, // 👈 this is the key setting for mic/camera
+                        allowsInlineMediaPlayback: true,         // iOS video/audio autoplay
+                      ),
                       androidOnPermissionRequest: (controller, origin, resources) async {
                         return PermissionRequestResponse(
                           resources: resources,
