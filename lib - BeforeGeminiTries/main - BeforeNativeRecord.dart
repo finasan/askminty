@@ -10,8 +10,6 @@ import 'package:url_launcher/url_launcher.dart';
 import 'dart:io';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:finay/data/bottom_nav_data.dart' hide CustomBottomNavigationBar; // Import for BottomNavItem and loader, hide conflicting export
-import 'package:flutter_sound/flutter_sound.dart'; // Add this import for FlutterSoundRecorder
-import 'package:path_provider/path_provider.dart'; // Add this import for getTemporaryDirectory
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,6 +17,7 @@ void main() async {
   if (Platform.isAndroid) {
     await AndroidInAppWebViewController.setWebContentsDebuggingEnabled(true);
   }
+
 
   Future<void> _requestMicrophonePermission() async {
     var status = await Permission.microphone.status;
@@ -28,57 +27,11 @@ void main() async {
   }
 
   await _requestMicrophonePermission();
-
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
-class MyApp extends StatefulWidget {
-  const MyApp({super.key}); // Correct placement of the MyApp constructor
-
-  @override
-  _MyAppState createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  // These are commented out as they were causing issues without full implementation
-  // and seem to be part of an incomplete feature based on the original problem.
-  // If you intend to use audio recording, you'll need to fully implement
-  // the FlutterSound package.
-  // final FlutterSoundRecorder _recorder = FlutterSoundRecorder();
-  // String? _filePath;
-  // bool _isRecording = false;
-
-  @override
-  void initState() {
-    super.initState();
-    // _initRecorder(); // Commented out
-  }
-
-  // Future<void> _initRecorder() async {
-  //   final dir = await getTemporaryDirectory();
-  //   _filePath = '${dir.path}/voice.aac';
-  //   await _recorder.openRecorder();
-  // }
-
-  // Future<void> startNativeRecording() async {
-  //   if (!_recorder.isRecording) {
-  //     await _recorder.startRecorder(toFile: _filePath!);
-  //     setState(() {
-  //       _isRecording = true;
-  //     });
-  //   }
-  // }
-
-  // Future<void> stopNativeRecording() async {
-  //   if (_recorder.isRecording) {
-  //     await _recorder.stopRecorder();
-  //     await _recorder.closeRecorder();
-  //     setState(() {
-  //       _isRecording = false;
-  //     });
-  //     print("Recording saved to: $_filePath");
-  //   }
-  // }
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -117,6 +70,8 @@ class _SplashScreenState extends State<SplashScreen> {
   late WebViewChannelHandler _channelHandler;
   List<BottomNavItem> _bottomNavItems = []; // To store dynamically loaded bottom nav items
 
+  @override
+
   bool _isWebViewReady = false;
 
   Future<void> _initializeWebView() async {
@@ -140,9 +95,10 @@ class _SplashScreenState extends State<SplashScreen> {
         });
       }
     } catch (e) {
-      print("DNS resolution failed again: $e");
+      print("DNS resolution failed again: \$e");
     }
   }
+
 
   @override
   void initState() {
@@ -267,24 +223,12 @@ class _SplashScreenState extends State<SplashScreen> {
                       },
                       initialOptions: getWebViewOptions(),
                       onWebViewCreated: (controller) {
-                        controller.setSettings(
-                          settings: InAppWebViewSettings(
-                            userAgent: getWebViewOptions().crossPlatform.userAgent,
-                          ),
-                        );
                         webViewController = controller;
                         _channelHandler = WebViewChannelHandler(
                           controller: controller,
                           onMenuChanged: _handleColdFusionMenuStateChange,
                         );
-                        controller.addJavaScriptHandler(
-                          handlerName: 'UserAgentLogger',
-                          callback: (args) {
-                            debugPrint("WebView JS: navigator.userAgent is: ${args[0]}");
-                          },
-                        );
                       },
-
                       shouldOverrideUrlLoading: (controller, navigationAction) async {
                         final uri = navigationAction.request.url;
 
@@ -324,36 +268,13 @@ class _SplashScreenState extends State<SplashScreen> {
                           });
                           _updateBottomNavIndex(url.toString()); // Update bottom nav index on history change
                         }
-
-
                       },
-
-
-
-                      // >>> CORREÇÃO: Removendo a verificação getJavaScriptHandler <<<
-                      onLoadStop: (controller, url) async {
-                        debugPrint("WebView JS (returned): Could not get navigator.userAgent.");
-                        final String? userAgentFromJs = await controller.evaluateJavascript(source: "navigator.userAgent");
-                        if (userAgentFromJs != null) {
-                          debugPrint("WebView JS (returned): navigator.userAgent is: $userAgentFromJs");
-                        } else {
-                          debugPrint("WebView JS (returned): Could not get navigator.userAgent.");
-                        }
-                      },
-                      // <<< FIM DA CORREÇÃO >>>
-
                       onLoadError: (controller, url, code, message) {
                         debugPrint("Error loading $url: $code, $message");
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("Error loading page: $message")),
+                          SnackBar(content: Text("Error loading page: ${message}")),
                         );
                       },
-
-
-
-
-
-
                     ),
                     if (progress < 1.0)
                       Positioned.fill(
@@ -366,6 +287,7 @@ class _SplashScreenState extends State<SplashScreen> {
                           ),
                         ),
                       ),
+                    // >>> MODIFICATION STARTS HERE <<<
                     if (_isDrawerOpen) // Only show the GestureDetector when the drawer is open
                       Positioned.fill(
                         child: GestureDetector(
@@ -375,6 +297,7 @@ class _SplashScreenState extends State<SplashScreen> {
                           ),
                         ),
                       ),
+                    // >>> MODIFICATION ENDS HERE <<<
                     AnimatedPositioned(
                       duration: const Duration(milliseconds: 300),
                       curve: Curves.easeInOut,

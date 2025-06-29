@@ -267,24 +267,12 @@ class _SplashScreenState extends State<SplashScreen> {
                       },
                       initialOptions: getWebViewOptions(),
                       onWebViewCreated: (controller) {
-                        controller.setSettings(
-                          settings: InAppWebViewSettings(
-                            userAgent: getWebViewOptions().crossPlatform.userAgent,
-                          ),
-                        );
                         webViewController = controller;
                         _channelHandler = WebViewChannelHandler(
                           controller: controller,
                           onMenuChanged: _handleColdFusionMenuStateChange,
                         );
-                        controller.addJavaScriptHandler(
-                          handlerName: 'UserAgentLogger',
-                          callback: (args) {
-                            debugPrint("WebView JS: navigator.userAgent is: ${args[0]}");
-                          },
-                        );
                       },
-
                       shouldOverrideUrlLoading: (controller, navigationAction) async {
                         final uri = navigationAction.request.url;
 
@@ -324,36 +312,13 @@ class _SplashScreenState extends State<SplashScreen> {
                           });
                           _updateBottomNavIndex(url.toString()); // Update bottom nav index on history change
                         }
-
-
                       },
-
-
-
-                      // >>> CORREÇÃO: Removendo a verificação getJavaScriptHandler <<<
-                      onLoadStop: (controller, url) async {
-                        debugPrint("WebView JS (returned): Could not get navigator.userAgent.");
-                        final String? userAgentFromJs = await controller.evaluateJavascript(source: "navigator.userAgent");
-                        if (userAgentFromJs != null) {
-                          debugPrint("WebView JS (returned): navigator.userAgent is: $userAgentFromJs");
-                        } else {
-                          debugPrint("WebView JS (returned): Could not get navigator.userAgent.");
-                        }
-                      },
-                      // <<< FIM DA CORREÇÃO >>>
-
                       onLoadError: (controller, url, code, message) {
                         debugPrint("Error loading $url: $code, $message");
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text("Error loading page: $message")),
                         );
                       },
-
-
-
-
-
-
                     ),
                     if (progress < 1.0)
                       Positioned.fill(

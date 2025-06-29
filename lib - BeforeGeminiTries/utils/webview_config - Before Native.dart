@@ -10,10 +10,10 @@ InAppWebViewGroupOptions getWebViewOptions() {
 
   // Determine base User Agent based on platform
   if (Platform.isIOS) {
-    // Example iOS User Agent - Reverted to specific version
+    // Example iOS User Agent
     customUserAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1";
   } else if (Platform.isAndroid) {
-    // Example Android User Agent - Reverted to specific version
+    // Example Android User Agent
     customUserAgent = "Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Mobile Safari/537.36";
   } else {
     // Fallback for other platforms (e.g., web, desktop)
@@ -36,7 +36,7 @@ InAppWebViewGroupOptions getWebViewOptions() {
       allowFileAccessFromFileURLs: true,
       allowUniversalAccessFromFileURLs: true,
       userAgent: customUserAgent,
-      mediaPlaybackRequiresUserGesture: false, // NEW: Allow media to play...
+      mediaPlaybackRequiresUserGesture: false, // NEW: Allow media to play without explicit user gesture
     ),
     android: AndroidInAppWebViewOptions(
       useHybridComposition: true,

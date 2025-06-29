@@ -35,20 +35,38 @@ class AppMenuItem {
     IconData? iconData;
     if (json['icon'] != null) {
       switch (json['icon']) {
-        case 'home_outlined':
-          iconData = Icons.home_outlined;
-          break;
-        case 'insert_chart_outlined':
-          iconData = Icons.insert_chart_outlined;
-          break;
-        case 'person_outline':
-          iconData = Icons.person_outline;
-          break;
         case 'login':
           iconData = Icons.login;
           break;
-        case 'logout':
-          iconData = Icons.logout;
+        case 'account_circle':
+          iconData = Icons.account_circle;
+          break;
+        case 'info_outline':
+          iconData = Icons.info_outline;
+          break;
+        case 'quiz':
+          iconData = Icons.quiz;
+          break;
+        case 'help_outline':
+          iconData = Icons.help_outline;
+          break;
+        case 'home':
+          iconData = Icons.home;
+          break;
+        case 'settings':
+          iconData = Icons.settings;
+          break;
+        case 'video_library':
+          iconData = Icons.video_library;
+          break;
+        case 'shopping_cart':
+          iconData = Icons.shopping_cart;
+          break;
+        case 'school':
+          iconData = Icons.school;
+          break;
+        case 'mail_outline':
+          iconData = Icons.mail_outline;
           break;
         case 'alt_route':
           iconData = Icons.alt_route;
@@ -56,23 +74,17 @@ class AppMenuItem {
         case 'article':
           iconData = Icons.article;
           break; // For Articles icon
-        case 'question_mark':
-          iconData = Icons.question_mark;
-          break; // For Trivia icon
-        case 'podcasts':
-          iconData = Icons.podcasts;
-          break; // For Podcasts icon
-        case 'search':
-          iconData = Icons.search;
-          break; // For Search icon
-        case 'shopping_cart_outlined':
-          iconData = Icons.shopping_cart_outlined;
-          break; // For Loja icon
         case 'build':
           iconData = Icons.build;
           break; // For Tools icon
+        case 'logout':
+          iconData = Icons.logout;
+          break; // For Sign Out icon
+        case 'dashboard':
+          iconData = Icons.dashboard;
+          break; // For Main Options icon
         default:
-          iconData = Icons.help_outline; // Default icon if not found
+          iconData = null; // No icon if not mapped
       }
     }
 
@@ -85,11 +97,11 @@ class AppMenuItem {
   }
 }
 
-/// A static class to load and manage application menu data.
-class AppMenuDataLoader {
-  static const String _remoteUrl = 'https://www.finasana.com/jsonmenu.cfm';
-  static const String _fallbackAssetPath = 'assets/app_menu_data.json';
+/// A class to load and provide menu data from assets.
+class AppMenuData {
   static Map<String, List<AppMenuItem>>? _menuDataCache;
+  static const String _externalMenuUrl = 'https://www.finasana.com/jsonmenu.cfm';
+  static const String _fallbackAssetPath = 'assets/menu_data.json';
 
   /// Loads menu data from the external source or falls back to assets.
   /// Caches the data to avoid reloading on subsequent calls.
@@ -105,8 +117,8 @@ class AppMenuDataLoader {
 
     try {
       // Attempt to load from external URL first
-      debugPrint("AppMenuData: Attempting to load menu data from external URL: $_remoteUrl");
-      final response = await http.get(Uri.parse(_remoteUrl));
+      debugPrint("AppMenuData: Attempting to load menu data from external URL: $_externalMenuUrl");
+      final response = await http.get(Uri.parse(_externalMenuUrl));
 
       if (response.statusCode == 200) {
         try {
@@ -164,7 +176,7 @@ class AppMenuDataLoader {
     final allMenuData = await loadMenuData(forceRefresh: forceRefresh);
     // === IMPORTANT FIX: Use the context directly as the key ===
     final List<AppMenuItem> items = allMenuData[context] ?? [];
-    debugPrint("AppMenuData: Retrieving menu items for context '$context': ${items.length} items.");
+    debugPrint("AppMenuData: Retrieving menu items for context '$context'. Found ${items.length} items.");
     return items;
   }
 }
