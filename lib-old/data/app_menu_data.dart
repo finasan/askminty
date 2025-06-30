@@ -35,19 +35,44 @@ class AppMenuItem {
     IconData? iconData;
     if (json['icon'] != null) {
       switch (json['icon']) {
-        case 'home_outlined':iconData = Icons.home_outlined;break;
-        case 'insert_chart_outlined':iconData = Icons.insert_chart_outlined;break;
-        case 'person_outline':iconData = Icons.person_outline;break;
-        case 'login':iconData = Icons.login;break;
-        case 'logout':iconData = Icons.logout;break;
-        case 'alt_route':iconData = Icons.alt_route;break; // For Paths icon
-        case 'article':iconData = Icons.article;break; // For Articles icon
-        case 'question_mark':iconData = Icons.question_mark;break; // For Trivia icon
-        case 'podcasts':iconData = Icons.podcasts;break; // For Podcasts icon
-        case 'search':iconData = Icons.search;break; // For Search icon
-        case 'shopping_cart_outlined':iconData = Icons.shopping_cart_outlined;break; // For Loja icon
-        case 'build':iconData = Icons.build;break; // For Tools icon
-        default:iconData = Icons.help_outline; // Default icon if not found
+        case 'home_outlined':
+          iconData = Icons.home_outlined;
+          break;
+        case 'insert_chart_outlined':
+          iconData = Icons.insert_chart_outlined;
+          break;
+        case 'person_outline':
+          iconData = Icons.person_outline;
+          break;
+        case 'login':
+          iconData = Icons.login;
+          break;
+        case 'logout':
+          iconData = Icons.logout;
+          break;
+        case 'alt_route':
+          iconData = Icons.alt_route;
+          break; // For Paths icon
+        case 'article':
+          iconData = Icons.article;
+          break; // For Articles icon
+        case 'question_mark':
+          iconData = Icons.question_mark;
+          break; // For Trivia icon
+        case 'podcasts':
+          iconData = Icons.podcasts;
+          break; // For Podcasts icon
+        case 'search':
+          iconData = Icons.search;
+          break; // For Search icon
+        case 'shopping_cart_outlined':
+          iconData = Icons.shopping_cart_outlined;
+          break; // For Loja icon
+        case 'build':
+          iconData = Icons.build;
+          break; // For Tools icon
+        default:
+          iconData = Icons.help_outline; // Default icon if not found
       }
     }
 
