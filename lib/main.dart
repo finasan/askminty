@@ -8,7 +8,7 @@ import 'package:finay/utils/webview_channel_handler.dart';
 import 'package:finay/widgets/floating_back_button.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:io';
-// import 'package:permission_handler/permission.dart'; // Temporarily commented out
+import 'package:permission_handler/permission_handler.dart';
 import 'package:finay/data/bottom_nav_data.dart' hide CustomBottomNavigationBar;
 import 'package:finay/data/app_menu_data.dart';
 import 'package:flutter_sound/flutter_sound.dart';
@@ -22,15 +22,18 @@ void main() async {
     await AndroidInAppWebViewController.setWebContentsDebuggingEnabled(true);
   }
 
-  // Future<void> _requestMicrophonePermission() async { // Temporarily commented out
-  //   var status = await Permission.microphone.status; // Temporarily commented out
-  //   if (!status.isGranted) { // Temporarily commented out
-  //     await Permission.microphone.request(); // Temporarily commented out
-  //   } // Temporarily commented out
-  // } // Temporarily commented out
+  // Ensure native OS permissions are requested for microphone and camera.
+  // This is crucial for the InAppWebView to then be able to request them from the web content.
 
-  // await _requestMicrophonePermission(); // Temporarily commented out
+  // --- THESE LINES MUST BE UNCOMMENTED ---
+  var microphoneStatus = await Permission.microphone.status;
+  debugPrint('FINAY DEBUG: Initial Microphone Permission Status: $microphoneStatus');
+  var cameraStatus = await Permission.camera.status;
+  debugPrint('FINAY DEBUG: Initial Camera Permission Status: $cameraStatus');
 
+  await Permission.microphone.request();
+  await Permission.camera.request();
+  // --- END OF CRITICAL UNCOMMENTED LINES ---
   runApp(MyApp());
 }
 
