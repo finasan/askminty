@@ -283,11 +283,10 @@ class _SplashScreenState extends State<SplashScreen> {
                           mediaPlaybackRequiresUserGesture: false,
                           allowsInlineMediaPlayback: true,
                         ),
-                        onPermissionRequest: (controller, request) async {
-                          print('Permission request from webview: ${request.resources}');
-                          return PermissionResponse(
-                            resources: request.resources,
-                            action: PermissionResponseAction.GRANT, // Grant the permission
+                        androidOnPermissionRequest: (controller, origin, resources) async {
+                          return PermissionRequestResponse(
+                            resources: resources,
+                            action: PermissionRequestResponseAction.GRANT,
                           );
                         },
                         initialOptions: getWebViewOptions(),
