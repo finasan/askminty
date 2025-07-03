@@ -22,16 +22,17 @@ void main() async {
     await AndroidInAppWebViewController.setWebContentsDebuggingEnabled(true);
   }
 
-  // Ensure native OS permissions are requested for microphone.
+  // Ensure native OS permissions are requested for microphone and camera.
   // This is crucial for the InAppWebView to then be able to request them from the web content.
 
   // --- THESE LINES MUST BE UNCOMMENTED ---
   var microphoneStatus = await Permission.microphone.status;
   debugPrint('FINAY DEBUG: Initial Microphone Permission Status: $microphoneStatus');
-
+  var cameraStatus = await Permission.camera.status;
+  debugPrint('FINAY DEBUG: Initial Camera Permission Status: $cameraStatus');
 
   await Permission.microphone.request();
-
+  await Permission.camera.request();
   // --- END OF CRITICAL UNCOMMENTED LINES ---
   runApp(MyApp());
 }
