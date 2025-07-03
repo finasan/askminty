@@ -320,7 +320,7 @@ class _SplashScreenState extends State<SplashScreen> {
                               debugPrint('Flutter: JavaScript handler "recordingStopped" called.');
                               if (webViewController != null) {
                                 await webViewController!.pause();
-                                await Future.delayed(const Duration(milliseconds: 100)); // Small delay
+                                await Future.delayed(const Duration(milliseconds: 1000)); // Small delay
                                 await webViewController!.resume();
                                 debugPrint('Flutter: WebView pause/resume attempt complete.');
                               }
