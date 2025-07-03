@@ -25,15 +25,15 @@ void main() async {
   // Ensure native OS permissions are requested for microphone.
   // This is crucial for the InAppWebView to then be able to request them from the web content.
 
-  // --- THESE LINES MUST BE UNCOMMENTED ---
   var microphoneStatus = await Permission.microphone.status;
   debugPrint('FINAY DEBUG: Initial Microphone Permission Status: $microphoneStatus');
 
-
   await Permission.microphone.request();
 
-  // --- END OF CRITICAL UNCOMMENTED LINES ---
-  runApp(MyApp());
+  // Removed camera permission request as per your clarification
+  // await Permission.camera.request(); // This line was removed
+
+  runApp(const MyApp()); // Added const for MyApp
 }
 
 class MyApp extends StatefulWidget {
@@ -172,13 +172,16 @@ class _SplashScreenState extends State<SplashScreen> {
 
   void _loadUrlInWebView(String url) {
     if (webViewController != null && _isConnected) {
+      // --- IMPORTANT: Stop current loading to ensure resource release before new load ---
+      webViewController!.stopLoading();
+      // --- END IMPORTANT ---
       webViewController!.loadUrl(urlRequest: URLRequest(url: WebUri(url)));
       setState(() {
         _currentUrl = url;
       });
     } else if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Cannot load page: No internet connection.')),
+        const SnackBar(content: Text('Cannot load page: No internet connection.')),
       );
     }
   }
@@ -260,17 +263,17 @@ class _SplashScreenState extends State<SplashScreen> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.wifi_off, size: 60, color: Colors.grey),
-                            SizedBox(height: 20),
+                            const Icon(Icons.wifi_off, size: 60, color: Colors.grey),
+                            const SizedBox(height: 20),
                             Text(
                               _networkErrorMessage!,
                               textAlign: TextAlign.center,
                               style: TextStyle(fontSize: 18, color: Colors.grey[700]),
                             ),
-                            SizedBox(height: 20),
+                            const SizedBox(height: 20),
                             ElevatedButton(
                               onPressed: _startAppInitialization,
-                              child: Text('Retry App Startup'),
+                              child: const Text('Retry App Startup'),
                             ),
                           ],
                         ),
@@ -278,22 +281,31 @@ class _SplashScreenState extends State<SplashScreen> {
                     else
                       InAppWebView(
                         initialUrlRequest: URLRequest(url: WebUri(_currentUrl)),
-                        initialSettings: InAppWebViewSettings(
+                        initialSettings: InAppWebViewSettings( // --- IMPORTANT: Added InAppWebViewSettings ---
                           mediaPlaybackRequiresUserGesture: false,
                           allowsInlineMediaPlayback: true,
-                        ),
+                          iframeAllow: "microphone", // Set microphone permission for iframes
+                          javaScriptEnabled: true, // Ensured JavaScript is enabled
+                          // User agent is set later in onWebViewCreated, which is fine.
+                        ), // --- END IMPORTANT ---
                         onPermissionRequest: (controller, request) async {
                           print('Permission request from webview: ${request.resources}');
+                          // Grant specific permissions, ensure only microphone if that's all you need.
+                          final allowedResources = request.resources.where((resource) {
+                            return resource == PermissionResourceType.MICROPHONE;
+                          }).toList();
                           return PermissionResponse(
-                            resources: request.resources,
-                            action: PermissionResponseAction.GRANT, // Grant the permission
+                            resources: allowedResources,
+                            action: allowedResources.isNotEmpty ? PermissionResponseAction.GRANT : PermissionResponseAction.DENY,
                           );
                         },
-                        initialOptions: getWebViewOptions(),
+                        initialOptions: getWebViewOptions(), // Your custom options from webview_config.dart
                         onWebViewCreated: (controller) {
-                          controller.setSettings(
+                          controller.setSettings( // This applies settings not covered by initialSettings or overrides them
                             settings: InAppWebViewSettings(
                               userAgent: getWebViewOptions().crossPlatform.userAgent,
+                              // If you want to ensure iframeAllow is also set here for redundancy, you can.
+                              // iframeAllow: "microphone",
                             ),
                           );
                           webViewController = controller;
@@ -301,7 +313,21 @@ class _SplashScreenState extends State<SplashScreen> {
                             controller: controller,
                             onMenuChanged: _handleColdFusionMenuStateChange,
                           );
+                          // --- NEW: Register JavaScript handler for mic stopped event ---
                           controller.addJavaScriptHandler(
+                            handlerName: 'recordingStopped', // Must match the name in JS
+                            callback: (args) async {
+                              debugPrint('Flutter: JavaScript handler "recordingStopped" called.');
+                              if (webViewController != null) {
+                                await webViewController!.pause();
+                                await Future.delayed(const Duration(milliseconds: 100)); // Small delay
+                                await webViewController!.resume();
+                                debugPrint('Flutter: WebView pause/resume attempt complete.');
+                              }
+                            },
+                          );
+                          // --- END NEW ---
+                          controller.addJavaScriptHandler( // Existing handler
                             handlerName: 'UserAgentLogger',
                             callback: (args) {
                               debugPrint("WebView JS: navigator.userAgent is: ${args[0]}");
@@ -348,7 +374,6 @@ class _SplashScreenState extends State<SplashScreen> {
                           }
                         },
                         onLoadStop: (controller, url) async {
-                          debugPrint("WebView JS (returned): Could not get navigator.userAgent.");
                           final String? userAgentFromJs = await controller.evaluateJavascript(source: "navigator.userAgent");
                           if (userAgentFromJs != null) {
                             debugPrint("WebView JS (returned): navigator.userAgent is: $userAgentFromJs");
@@ -434,5 +459,11 @@ class _SplashScreenState extends State<SplashScreen> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    webViewController?.dispose(); // Crucially dispose the controller
+    super.dispose();
   }
 }
