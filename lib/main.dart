@@ -79,6 +79,7 @@ class _SplashScreenState extends State<SplashScreen> {
   bool _isDrawerOpen = false;
   String _coldFusionMenuState = 'home';
   int _currentBottomNavIndex = 0;
+  bool _isAibotPage = false; // ADDED: New variable to track if on aibot.cfm
 
   late WebViewChannelHandler _channelHandler;
   List<BottomNavItem> _bottomNavItems = [];
@@ -170,6 +171,7 @@ class _SplashScreenState extends State<SplashScreen> {
     });
   }
 
+  // MODIFIED: Updated this method to set _isAibotPage
   void _loadUrlInWebView(String url) {
     if (webViewController != null && _isConnected) {
       // --- IMPORTANT: Stop current loading to ensure resource release before new load ---
@@ -178,6 +180,7 @@ class _SplashScreenState extends State<SplashScreen> {
       webViewController!.loadUrl(urlRequest: URLRequest(url: WebUri(url)));
       setState(() {
         _currentUrl = url;
+        _isAibotPage = url.contains('aibot.cfm'); // ADDED: Check for aibot.cfm
       });
     } else if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -369,6 +372,7 @@ class _SplashScreenState extends State<SplashScreen> {
                               _currentUrl = url.toString();
                               _canGoBack = canGoBackStatus;
                               _canGoForward = canGoForwardStatus;
+                              _isAibotPage = url.toString().contains('aibot.cfm'); // ADDED: Check for aibot.cfm
                             });
                             _updateBottomNavIndex(url.toString());
                           }
@@ -443,7 +447,7 @@ class _SplashScreenState extends State<SplashScreen> {
                             webViewController!.goBack();
                           }
                         },
-                        isVisible: _canGoBack,
+                        isVisible: _canGoBack && !_isAibotPage, // MODIFIED: Added !isAibotPage check
                       ),
                     ),
                   ],
