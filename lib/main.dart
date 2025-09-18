@@ -324,6 +324,7 @@ class _SplashScreenState extends State<SplashScreen> {
                       InAppWebView(
                         initialUrlRequest: URLRequest(url: WebUri(_currentUrl)),
                         initialSettings: InAppWebViewSettings( // --- IMPORTANT: Added InAppWebViewSettings ---
+                          disableInputAccessoryView: true,
                           mediaPlaybackRequiresUserGesture: false,
                           allowsInlineMediaPlayback: true,
                           iframeAllow: "microphone", // Set microphone permission for iframes
