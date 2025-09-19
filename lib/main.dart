@@ -347,6 +347,7 @@ class _SplashScreenState extends State<SplashScreen> {
                           controller.setSettings( // This applies settings not covered by initialSettings or overrides them
                             settings: InAppWebViewSettings(
                               userAgent: getWebViewOptions().crossPlatform.userAgent,
+                              disableInputAccessoryView: true,
                               // If you want to ensure iframeAllow is also set here for redundancy, you can.
                               // iframeAllow: "microphone",
                             ),
