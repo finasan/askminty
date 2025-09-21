@@ -26,7 +26,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: Colors.black,
       foregroundColor: Theme.of(context).colorScheme.onPrimary,
       title: Image.asset(
-        'assets/FinaAndroid.png', // Path to your logo image from the provided baseline
+        'assets/AskMinty_v4.png', // Path to your logo image from the provided baseline
         height: kToolbarHeight * 0.7, // Adjust height as needed, e.g., 70% of AppBar height
         fit: BoxFit.contain, // Ensures the image fits within bounds without cropping
       ),

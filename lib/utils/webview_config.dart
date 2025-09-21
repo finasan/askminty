@@ -26,7 +26,7 @@ InAppWebViewGroupOptions getWebViewOptions() {
       : " Flutter-gonative-iOS"; // Adjusted suffix based on context
 
   customUserAgent = "$customUserAgent $suffix";
-  debugPrint("FinasanaApp: Custom User Agent set to: $customUserAgent");
+  debugPrint("AskMintyApp: Custom User Agent set to: $customUserAgent");
 
   // Return the InAppWebViewGroupOptions with the custom User Agent
   return InAppWebViewGroupOptions(

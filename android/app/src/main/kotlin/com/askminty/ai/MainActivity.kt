@@ -1,4 +1,4 @@
-package com.finamobi.finay
+package com.askminty.ai
 
 import io.flutter.embedding.android.FlutterActivity
 

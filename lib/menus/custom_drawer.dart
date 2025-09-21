@@ -1,6 +1,6 @@
 // lib/menus/custom_drawer.dart
 import 'package:flutter/material.dart';
-import 'package:finay/data/app_menu_data.dart'; // Import your menu data models and loader
+import 'package:askminty/data/app_menu_data.dart'; // Import your menu data models and loader
 import 'package:flutter/foundation.dart'; // For debugPrint
 
 /// A custom menu panel widget for the application.

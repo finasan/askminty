@@ -1,6 +1,6 @@
 // lib/menus/bottom_nav_bar.dart
 import 'package:flutter/material.dart';
-import 'package:finay/data/bottom_nav_data.dart'; // Import the new data loader
+import 'package:askminty/data/bottom_nav_data.dart'; // Import the new data loader
 
 /// A custom BottomNavigationBar for the application.
 /// It displays a list of dynamic navigation options and provides a callback

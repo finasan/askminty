@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:finay/menus/custom_app_bar.dart';
-import 'package:finay/menus/custom_drawer.dart';
-import 'package:finay/menus/bottom_nav_bar.dart';
-import 'package:finay/utils/webview_config.dart';
-import 'package:finay/utils/webview_channel_handler.dart';
-import 'package:finay/widgets/floating_back_button.dart';
+import 'package:askminty/menus/custom_app_bar.dart';
+import 'package:askminty/menus/custom_drawer.dart';
+import 'package:askminty/menus/bottom_nav_bar.dart';
+import 'package:askminty/utils/webview_config.dart';
+import 'package:askminty/utils/webview_channel_handler.dart';
+import 'package:askminty/widgets/floating_back_button.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:io';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_tts/flutter_tts.dart';
-import 'package:finay/data/bottom_nav_data.dart' hide CustomBottomNavigationBar;
-import 'package:finay/data/app_menu_data.dart';
+import 'package:askminty/data/bottom_nav_data.dart' hide CustomBottomNavigationBar;
+import 'package:askminty/data/app_menu_data.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -27,7 +27,7 @@ void main() async {
   // This is crucial for the InAppWebView to then be able to request them from the web content.
 
   var microphoneStatus = await Permission.microphone.status;
-  debugPrint('FINAY DEBUG: Initial Microphone Permission Status: $microphoneStatus');
+  debugPrint('askminty DEBUG: Initial Microphone Permission Status: $microphoneStatus');
 
   await Permission.microphone.request();
 
@@ -49,7 +49,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'TEMPL',
+      title: 'ASKMINTY',
       theme: ThemeData(
         brightness: Brightness.light,
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF21C87A)),

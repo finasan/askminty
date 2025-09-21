@@ -11,7 +11,7 @@
 
 
     <application
-        android:label="Finasana 16"
+        android:label="AskMinty AI"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:usesCleartextTraffic="true">
