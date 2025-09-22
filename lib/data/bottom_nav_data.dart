@@ -22,7 +22,12 @@ class BottomNavItem {
     // Map string icon name to Flutter IconData, similar to AppMenuItem
     IconData iconData;
     switch (json['icon']) {
+
       case 'login': iconData = Icons.login; break;
+      case 'new': iconData = Icons.open_in_new_sharp; break;
+      case 'help': iconData = Icons.live_help; break;
+      case 'chat': iconData = Icons.chat; break;
+      case 'about': iconData = Icons.info_rounded; break;
       case 'logout': iconData = Icons.logout; break;
       case 'alt_route': iconData = Icons.alt_route; break; // For Paths icon
       case 'article': iconData = Icons.article; break; // For Articles icon
@@ -47,7 +52,7 @@ class BottomNavItem {
 
 /// A static class to load and manage bottom navigation data.
 class BottomNavDataLoader {
-  static const String _remoteUrl = 'https://www.finasana.com/jsonbottom.cfm';
+  static const String _remoteUrl = 'https://www.askminty.com/parms/jsonbottom_ai.cfm';
   static const String _fallbackAssetPath = 'assets/bottom_nav_data.json';
   static Map<String, List<BottomNavItem>>? _bottomNavDataCache;
 

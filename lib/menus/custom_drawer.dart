@@ -92,10 +92,10 @@ class _CustomDrawerPanelState extends State<CustomDrawerPanel> {
 
                   // --- MODIFIED LOGIC: Force refresh for "Home" menu item ---
                   // Using a more specific contains check based on the exact URL provided by the user.
-                  final bool isHomeMenuItem = item.url!.toLowerCase().contains('indexm.cfm?pt=smartphone&lang=1');
+                  final bool isHomeMenuItem = item.url!.toLowerCase().contains('aibot.cfm?pt=smartphone&lang=1');
 
                   if (isHomeMenuItem) {
-                    debugPrint("CustomDrawerPanel: 'Home' menu item (indexm.cfm?pt=smartphone&lang=1) tapped. Forcing menu data refresh.");
+                    debugPrint("CustomDrawerPanel: 'Home' menu item tapped. Forcing menu data refresh.");
                     // Trigger a force refresh of the menu items for the *current* coldFusionMenuState.
                     // This reloads the menu itself after navigating home.
                     _loadMenuItems(forceRefresh: true);

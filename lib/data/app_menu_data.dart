@@ -62,7 +62,7 @@ class AppMenuItem {
 
 /// A static class to load and manage application menu data.
 class AppMenuDataLoader {
-  static const String _remoteUrl = 'https://www.finasana.com/jsonmenu.cfm';
+  static const String _remoteUrl = 'https://www.askminty.com/parms/jsonmenu_ai.cfm';
   static const String _fallbackAssetPath = 'assets/menu_data.json';
   static Map<String, List<AppMenuItem>>? _menuDataCache;
 

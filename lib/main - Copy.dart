@@ -220,15 +220,6 @@ class _SplashScreenState extends State<SplashScreen> {
       setState(() {
         _currentUrl = url;
         _isAibotPage = url.contains('aibot.cfm'); // ADDED: Check for aibot.cfm
-
-        final u = (url?.toString() ?? '').toLowerCase();
-
-        _isAibotPage =
-            u.contains('/aibot.cfm') ||
-                u.contains('/ai_bon_out.cfm') ||
-                RegExp(r'/ai_mob[^/]*\.cfm(?:$|\?)', caseSensitive: false).hasMatch(u); // any ai_mob*.cfm
-
-
       });
     } else if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -471,16 +462,6 @@ class _SplashScreenState extends State<SplashScreen> {
                               _canGoBack = canGoBackStatus;
                               _canGoForward = canGoForwardStatus;
                               _isAibotPage = url.toString().contains('aibot.cfm'); // ADDED: Check for aibot.cfm
-
-                              final u = (url?.toString() ?? '').toLowerCase();
-                              _isAibotPage =
-                                  u.contains('/aibot.cfm') ||
-                                      u.contains('/ai_bon_out.cfm') ||
-                                      u.contains('/ai_mob/') ||                          // directory case
-                                      RegExp(r'/ai_mob[^/]*\.cfm(?:$|\?)').hasMatch(u);  // any ai_mob*.cfm file
-
-
-
                             });
                             _updateBottomNavIndex(url.toString());
                           }

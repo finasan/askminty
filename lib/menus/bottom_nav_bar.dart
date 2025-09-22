@@ -35,11 +35,9 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
   @override
   void didUpdateWidget(covariant CustomBottomNavigationBar oldWidget) {
     super.didUpdateWidget(oldWidget);
-    // Reload items if the coldFusionMenuState changes
     if (widget.coldFusionMenuState != oldWidget.coldFusionMenuState) {
       _loadNavItems();
     }
-    // Update selected index if it changes from parent (e.g., if you set it externally)
     if (widget.currentIndex != oldWidget.currentIndex) {
       _selectedIndex = widget.currentIndex;
     }
@@ -52,10 +50,8 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
     if (mounted) {
       setState(() {
         _navItems = loadedItems;
-        // Optionally reset _selectedIndex if the list structure significantly changes
-        // or ensure it's within bounds. For now, we assume current index remains valid.
         if (_selectedIndex >= _navItems.length) {
-          _selectedIndex = 0; // Reset if out of bounds
+          _selectedIndex = 0;
         }
       });
       debugPrint("CustomBottomNavigationBar: Loaded ${_navItems.length} items for state: ${widget.coldFusionMenuState}");
@@ -64,18 +60,15 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
 
   @override
   Widget build(BuildContext context) {
-    // If no items are loaded yet, provide placeholder items to satisfy BottomNavigationBar's assertion.
-    // The actual items will be rendered once _navItems is populated.
     final List<BottomNavigationBarItem> displayItems = _navItems.isEmpty
         ? [
-      // Placeholder items (at least two required for BottomNavigationBar)
       BottomNavigationBarItem(
-        icon: Icon(Icons.info), // You can choose any placeholder icon
-        label: 'Loading...',    // Placeholder label
+        icon: Icon(Icons.info),
+        label: 'Loading...',
       ),
       BottomNavigationBarItem(
-        icon: Icon(Icons.refresh), // Another placeholder icon
-        label: 'Please Wait',     // Another placeholder label
+        icon: Icon(Icons.refresh),
+        label: 'Please Wait',
       ),
     ]
         : _navItems.map((item) {
@@ -85,28 +78,30 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
       );
     }).toList();
 
-    return BottomNavigationBar(
-      type: BottomNavigationBarType.fixed, // Ensures all labels are always visible
-      currentIndex: _selectedIndex,
-      onTap: (index) {
-        // Only allow tap if actual items are loaded and index is valid for those items
-        if (_navItems.isNotEmpty && index < _navItems.length) {
-          setState(() {
-            _selectedIndex = index;
-          });
-          final selectedUrl = _navItems[index].url;
-          widget.onItemSelected(selectedUrl);
-        } else {
-          // If items are not loaded yet or an invalid index is tapped (e.g., on placeholder items),
-          // you can choose to do nothing, log, or show a temporary message.
-          debugPrint("CustomBottomNavigationBar: Tap ignored. Items not loaded or invalid index during loading.");
-        }
-      },
-      items: displayItems, // Use the 'displayItems' list which handles placeholders
-      selectedItemColor: Color(0xFF21C87A),
-      unselectedItemColor: Colors.white,
-      backgroundColor: Colors.black,
-      // You can add more styling here if needed
+    // ✅ Wrapped in SizedBox with custom height
+    return SizedBox(
+      height: 58, // increase height (default ~56)
+      child: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        currentIndex: _selectedIndex,
+        onTap: (index) {
+          if (_navItems.isNotEmpty && index < _navItems.length) {
+            setState(() {
+              _selectedIndex = index;
+            });
+            final selectedUrl = _navItems[index].url;
+            widget.onItemSelected(selectedUrl);
+          } else {
+            debugPrint("CustomBottomNavigationBar: Tap ignored. Items not loaded or invalid index during loading.");
+          }
+        },
+        items: displayItems,
+        selectedItemColor: Colors.white,
+        unselectedItemColor: Colors.black,
+        backgroundColor: const Color(0xFF21C87A),
+        iconSize: 24
+        , // ✅ bigger icons, better centering
+      ),
     );
   }
 }
