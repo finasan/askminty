@@ -80,7 +80,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
 
     // ✅ Wrapped in SizedBox with custom height
     return SizedBox(
-      height: 58, // increase height (default ~56)
+      height: 70, // increase height (default ~56)
       child: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         currentIndex: _selectedIndex,
