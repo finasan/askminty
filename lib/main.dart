@@ -335,7 +335,8 @@ class _SplashScreenState extends State<SplashScreen> {
                         initialSettings: InAppWebViewSettings( // --- IMPORTANT: Added InAppWebViewSettings ---
                           disableInputAccessoryView: true,
                           mediaPlaybackRequiresUserGesture: false,
-                          allowsInlineMediaPlayback: true,
+                         // allowsInlineMediaPlayback: true,
+                          allowsInlineMediaPlayback: false,
                           iframeAllow: "microphone", // Set microphone permission for iframes
                           javaScriptEnabled: true, // Ensured JavaScript is enabled
                           // User agent is set later in onWebViewCreated, which is fine.
