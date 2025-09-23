@@ -15,6 +15,8 @@ import 'package:askminty/data/app_menu_data.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:askminty/utils/tts_service.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -70,6 +72,9 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   // ANDROID-ONLY TTS state
   final FlutterTts _tts = FlutterTts();
+  // iOS TTS service (uses enhanced voices when available)
+  final TtsService _iosTts = TtsService();
+
   bool _isNativeSpeaking = false;
   // REMOVED: No longer needed with simplified logic
   // bool _nativeToggleBusy = false;
@@ -93,14 +98,21 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   void initState() {
-    super.initState();
+      super.initState();
 
-    // Android TTS lifecycle hooks
-    if (Platform.isAndroid) {
-      _tts.awaitSpeakCompletion(true);
-      _tts.setStartHandler(() {
-        _isNativeSpeaking = true;
-      });
+      // Android TTS lifecycle hooks
+      if (Platform.isAndroid) {
+        _tts.awaitSpeakCompletion(true);
+        _tts.setStartHandler(() {
+          _isNativeSpeaking = true;
+        });
+
+      // iOS: initialize enhanced voice + audio category
+      if (Platform.isIOS) {
+          _iosTts.init();
+        };
+
+
       _tts.setCompletionHandler(() async {
         _isNativeSpeaking = false;
         try {
@@ -364,6 +376,33 @@ class _SplashScreenState extends State<SplashScreen> {
                           );
                           webViewController = controller;
 
+                          // iOS native TTS bridge handlers (mirrors Android handlers)
+                          if (Platform.isIOS) {
+                            controller.addJavaScriptHandler(
+                              handlerName: 'nativeSpeak',
+                              callback: (args) async {
+                                final text = (args.isNotEmpty ? (args[0] as String) : '');
+                                try {
+                                  await _iosTts.speak(text);
+                                } catch (e) {
+                                  debugPrint('iOS nativeSpeak error: $e');
+                                }
+                                return true;
+                              },
+                            );
+
+                            controller.addJavaScriptHandler(
+                              handlerName: 'nativeStop',
+                              callback: (args) async {
+                                try {
+                                  await _iosTts.stop();
+                                } catch (_) {}
+                                return true;
+                              },
+                            );
+                          }
+
+
                           // ANDROID-ONLY native TTS bridge handlers
                           if (Platform.isAndroid) {
                             // REMOVED: The `nativeToggle` handler was removed as it caused conflicts.
@@ -395,6 +434,8 @@ class _SplashScreenState extends State<SplashScreen> {
                                 return true;
                               },
                             );
+
+
 
                             // MODIFIED: Simplified `nativeStop` handler to only stop.
                             controller.addJavaScriptHandler(
