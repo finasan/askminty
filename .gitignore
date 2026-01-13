@@ -45,3 +45,7 @@ app.*.map.json
 /android/app/release
 build/
 ios/build/
+ios/build/
+ios/Pods/
+ios/Podfile.lock
+pubspec.lock
